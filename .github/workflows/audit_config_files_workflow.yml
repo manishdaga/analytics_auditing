@@ -35,7 +35,7 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} --diff-filter=AM -- configs/dms_configs/*.json)"
+          echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} --diff-filter=AM -- auditing_configs/data_audit_config_file.json)"
 
       - name : Sync github to S3
         uses: jakejarvis/s3-sync-action@master
@@ -63,17 +63,17 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${{ secrets.AWS_REGION }}"
-        working-directory: terraform/dms_setup/
+        working-directory: auditing_configs/
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        working-directory: terraform/dms_setup/
+        working-directory: auditing_configs/
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
         if: github.event_name == 'pull_request'
         continue-on-error: true
-        working-directory: terraform/dms_setup/
+        working-directory: auditing_configs/
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
@@ -109,7 +109,7 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var="file_change=${{ steps.changed-files.outputs.files }}"
-        working-directory: terraform/dms_setup/
+        working-directory: auditing_configs/
 
       # Add a new step to trigger the Glue job
       - name: Run Glue Job
