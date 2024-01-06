@@ -32,11 +32,10 @@ jobs:
       - name: Get changed files
         id: changed-files
         run: |
-          echo "::set-output name=files::$(git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}" --diff-filter=AM -- 'auditing_configs/data_audit_config_file.json')"
-
+          echo "::set-output name=files::$(git diff --name-only "${{ github.sha }}^" "${{ github.sha }}" -- 'auditing_configs/data_audit_config_file.json')"
 
       - name: Sync file to S3 and Trigger Glue Job
-        if: github.event_name == 'pull_request' 
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           aws s3 cp auditing_configs/data_audit_config_file.json s3://${{ secrets.AWS_S3_BUCKET }}/auditing_configs/data_audit_config_file.json
           aws glue start-job-run --job-name analytics-data-audit-testing-final
