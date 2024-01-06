@@ -1,6 +1,6 @@
 name: "Adding DB/TB to DMS task using terraform"
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
