@@ -38,5 +38,5 @@ jobs:
       - name: Sync file to S3 and Trigger Glue Job
         if: github.event_name == 'pull_request' 
         run: |
-          aws s3 cp auditing_configs/data_audit_config_file.json s3://${{ secrets.AWS_S3_BUCKET }}/path/to/destination/
+          aws s3 cp auditing_configs/data_audit_config_file.json s3://${{ secrets.AWS_S3_BUCKET }}/auditing_configs/data_audit_config_file.json
           aws glue start-job-run --job-name analytics-data-audit-testing-final
