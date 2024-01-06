@@ -7,4 +7,5 @@
   "primaryKey": ["id"],
   "audit_column": ["quantity"]
   }               
-]
+] 
+# check 
