@@ -13,7 +13,6 @@
     "db_name":"sales",
     "tb_name":"orders",
     "primaryKey": ["id"],
-    "audit_column": ["amount"],
-    "isDeleted":false
+    "audit_column": ["amount"]
     }                
 ] 
