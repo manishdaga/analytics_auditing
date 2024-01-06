@@ -6,5 +6,18 @@
   "tb_name":"purchases",
   "primaryKey": ["id"],
   "audit_column": ["quantity"]
+<<<<<<< Updated upstream
   }               
 ]
+=======
+  },
+  {
+    "rds_name":"test-database",
+    "rds_instance_type":"mysql",
+    "db_name":"sales",
+    "tb_name":"orders",
+    "primaryKey": ["id"],
+    "audit_column": ["amount"]
+    }                
+] 
+>>>>>>> Stashed changes
