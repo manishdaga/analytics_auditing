@@ -1,6 +1,6 @@
 name: "Adding DB/TB to DMS task using terraform"
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
@@ -34,8 +34,25 @@ jobs:
         run: |
           echo "::set-output name=files::$(git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}" --diff-filter=AM -- 'auditing_configs/data_audit_config_file.json')"
 
+      - name: Request Review
+        if: github.event_name == 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          echo "This pull request requires approval before deployment."
+          echo "Assigned reviewers will need to review and approve the changes."
+
+      - name: Check Review Approval
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+        run: |
+          reviews=$(gh pr review-list --json state | jq -r '.[].state')
+          if [[ $reviews == *"APPROVED"* ]]; then
+            echo "Pull request approved. Proceeding with deployment."
+          else
+            echo "Pull request not approved. Exiting."
+            exit 1
+          fi
+
       - name: Sync file to S3 and Trigger Glue Job
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' 
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
         run: |
           aws s3 cp auditing_configs/data_audit_config_file.json s3://${{ secrets.AWS_S3_BUCKET }}/path/to/destination/
           aws glue start-job-run --job-name analytics-data-audit-testing-final
