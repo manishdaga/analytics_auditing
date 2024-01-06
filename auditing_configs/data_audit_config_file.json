@@ -6,10 +6,6 @@
   "tb_name":"purchases",
   "primaryKey": ["id"],
   "audit_column": ["quantity"]
-<<<<<<< Updated upstream
-  }               
-]
-=======
   },
   {
     "rds_name":"test-database",
@@ -20,4 +16,3 @@
     "audit_column": ["amount"]
     }                
 ] 
->>>>>>> Stashed changes
